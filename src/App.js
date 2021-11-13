@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import { CardList } from './components/card-list/card-list.component';
+import { SearchBox } from './components/search-box/search-box-component';
 // function App() { //functions and classes is use to return the HTML  they work the same as showq the return by below using class
 //   return (
 //     <div className="App">
@@ -56,24 +57,39 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      monsters: [ ]
+      monsters: [],
+      searchField: ''
     };
+
+    // this.handleChange = this.handleChange.bind(this);
   }
 
+  // fetch( "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=110052&date=11-11-2021" )
   componentDidMount() {
     fetch("https://jsonplaceholder.typicode.com/users")
-    // fetch( "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=110052&date=11-11-2021" )
-      .then((response) =>
-        response.json()
-      ) /*to get the response in json format we are using json method */
+      .then(
+        (response) => response.json() /*to get the response in json format we are using json method */
+      )
       .then((users) => this.setState({ monsters: users })); /* seting monstore to new users array which recived from API */
   }
 
+  handleChange=(e) => this.setState({ searchField: e.target.value })
+
   render() {
+    const { monsters, searchField } = this.state;   //destructuring the (monster and srarchField from this.state )  it is like below const monsters = this.state.monsters; const searchField = this.state.searchField;
+    const filteredMonsters = monsters.filter(monster =>
+      monster.name.toLowerCase().includes(searchField.toLowerCase())
+    )
     return (
       <div className="App">
-        <CardList monsters={this.state.monsters} / >
-        {/* Tiwari-PK is children component for  CardList */}
+        <h1> Monsters </h1>
+        <SearchBox
+          placeholder="search monsters"
+          handleChange={ this.handleChange }
+        />
+        <CardList monsters={filteredMonsters} />
+
+        {/* <CardList monsters={this.state.monsters} /> */}
         {/* {this.state.monsters.map((monster) => (
           <h1 key={monster.id}>{monster.name}</h1>
         ))} */}
