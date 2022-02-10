@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-// here the component is the part of library and here we are destructuring the react we can use directly the componebt without destructuring  it as   React.Component
-// import logo from './logo.svg';
+// here the component is the part of library and here we are destructuring the react. we can use directly the componebt without destructuring  it, as   React.Component
 import './App.css';
 import { CardList } from './components/card-list/card-list.component';
 import { SearchBox } from './components/search-box/search-box-component';
@@ -57,7 +56,9 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      // this array will take the data from the api
       monsters: [],
+      // this string will take the data form searchfield
       searchField: ''
     };
 
@@ -67,26 +68,34 @@ class App extends Component {
   // fetch( "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=110052&date=11-11-2021" )
   componentDidMount() {
     fetch("https://jsonplaceholder.typicode.com/users")
-      .then(
-        (response) => response.json() /*to get the response in json format we are using json method */
-      )
-      .then((users) => this.setState({ monsters: users })); /* seting monstore to new users array which recived from API */
+      //will give us full response with header and body. what we want is only the body data in a format
+      //.then(response)=> console.log(response)
+      /*to get the body data in a json format we are using json method */
+      .then((response) => response.json())
+      /* setting the body data(recived from API) into a monster array.*/
+      .then((users) => this.setState({ monsters: users }));
   }
-
+//when ever we right something inside the serach field. it set the value to searchfield  , which is initially empty
   handleChange=(e) => this.setState({ searchField: e.target.value })
 
   render() {
-    const { monsters, searchField } = this.state;   //destructuring the (monster and srarchField from this.state )  it is like below const monsters = this.state.monsters; const searchField = this.state.searchField;
+    //destructuring the (monster and srarchField from this.state )  it is like below const monsters = this.state.monsters; const searchField = this.state.searchField;
+    const { monsters, searchField } = this.state;
+    // The filter() method creates a new array with all the elements that pass the test implemented by the callback() function.
+    // includes() method determines whether a string contains the given characters within it or not. note it is case sensetive
     const filteredMonsters = monsters.filter(monster =>
       monster.name.toLowerCase().includes(searchField.toLowerCase())
     )
     return (
       <div className="App">
         <h1> Monsters </h1>
+        {/* here we are passing placeholder and handlechange function as a props into the components */}
         <SearchBox
           placeholder="search monsters"
-          handleChange={ this.handleChange }
+          handleChange={this.handleChange}
         />
+
+        {/* here we are passing filtered data to card components as a props if data match with monster array will shown by the card components */}
         <CardList monsters={filteredMonsters} />
 
         {/* <CardList monsters={this.state.monsters} /> */}
